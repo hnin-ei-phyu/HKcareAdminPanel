@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react'
+import { assets } from '../assets/assets'
 import { AdminContext } from '../context/AdminContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-
-const login = () => {
+ 
+const Login = () => {
 
     //State variable to handle admin and doctor login
     const [state, setState] = useState('Admin')
@@ -67,4 +68,4 @@ const login = () => {
   )
 }
 
-export default login
+export default Login
