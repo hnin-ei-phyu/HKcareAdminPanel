@@ -10,6 +10,8 @@ const AdminContextProvider = (props) => {
     //State variables to handle logins and store data
     const [aToken, setAtoken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '')
     const [doctors, setDoctors] = useState([])
+    const [appointments, setAppointments] = useState([])
+    const [dashData, setDashData] = useState(false)
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
@@ -18,7 +20,7 @@ const AdminContextProvider = (props) => {
             const { data } = await axios.post(backendUrl + '/api/admin/all-doctors', {}, { headers: { aToken } })
             if (data.success) {
                 setDoctors(data.doctors)
-                console.log(data.doctors);
+        
                 
             } else {
                 toast.error(data.message)
@@ -44,11 +46,67 @@ const AdminContextProvider = (props) => {
             toast.error(error.message)
         }
     }
+
+    //get all appointments
+    const getAllAppointments = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/admin/appointments', { headers: { aToken } })
+            if (data.success) {
+                setAppointments(data.appointments)
+                
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+    }
+
+    //For cancelling appointments
+    const cancelAppointment = async (appointmentId) => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/admin/cancel-appointment', { appointmentId }, { headers: { aToken } })
+            if (data.success) {
+                toast.success(data.message)
+                getAllAppointments()
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    //to get dashData fro Backend API
+    const getDashData = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/admin/dashboard', { headers: { aToken } })
+            if (data.success) {
+                setDashData(data.dashData)
+
+                
+            } else {
+                toast.error(data.message)
+            }
+            
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+    } 
+
     const value = {
         //so that can access toke for any components
         aToken, setAtoken,
         backendUrl, doctors,
-        getAllDoctors, changeAvailability
+        getAllDoctors, changeAvailability,
+        appointments, setAppointments,
+        getAllAppointments,
+        cancelAppointment,
+        dashData, getDashData
     }
 
     return (
